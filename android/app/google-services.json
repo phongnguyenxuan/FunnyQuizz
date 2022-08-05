@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "474933581378",
+    "project_id": "letmath-342b4",
+    "storage_bucket": "letmath-342b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474933581378:android:a40536f278ea56644e7fdb",
+        "android_client_info": {
+          "package_name": "com.example.something"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "474933581378-66hrqelciadurh5vtdr7mksj8o4gtbmu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBudLFEc4N8nArL4a1CLhoNcfV_ZAwBOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "474933581378-66hrqelciadurh5vtdr7mksj8o4gtbmu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
