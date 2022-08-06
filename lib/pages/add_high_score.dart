@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,10 +23,16 @@ class _AddHighScoreState extends State<AddHighScore> {
   scoreController score = Get.put(scoreController());
   PlayerController playerController = Get.put(PlayerController());
   late int sc;
+  late AudioPlayer audioPlayer;
+  AudioCache audioCache = new AudioCache();
   @override
   void initState() {
     sc = score.score.toInt();
     super.initState();
+    audioPlayer = AudioPlayer();
+    audioCache.prefix = "assets/";
+    audioPlayer.play(AssetSource("winning.mp3"),
+        position: const Duration(milliseconds: 100));
     controller = TextEditingController();
     controller.addListener(() {
       final isbuttonactive = controller.text.isNotEmpty;

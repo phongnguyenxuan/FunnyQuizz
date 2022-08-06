@@ -19,7 +19,7 @@ class Menu extends StatefulWidget {
 class _menuState extends State<Menu> {
   final String _faceUrl = "https://www.facebook.com/Anhphongggg";
   final String _IgUrl = "https://www.instagram.com/phongden_2210/";
-  final String _disCordUrl = "https://github.com/phongnguyenxuan";
+  final String _disCordUrl = "https://github.com/phongnguyenxuangit";
   @override
   Widget build(BuildContext context) {
     return Scaffold(

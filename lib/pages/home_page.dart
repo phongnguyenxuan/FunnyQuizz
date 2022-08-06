@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'dart:math';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -47,17 +48,39 @@ class _MyHomePageState extends State<MyHomePage> {
   int _time = 30;
   //score
   scoreController c = Get.put(scoreController());
-
+  //audio
+  late AudioPlayer audioPlayer;
+  AudioCache audioCache = new AudioCache();
   @override
   void initState() {
     super.initState();
     c.score = 0.obs;
+    audioPlayer = AudioPlayer();
+    audioCache.prefix = "assets/";
     setState(() {
       _timeCounter();
       _checkNum();
       _checkDivision();
       _checkMulti();
     });
+  }
+
+  void playsound() async {
+    try {
+      await audioPlayer.play(AssetSource("correct.mp3"),
+          position: const Duration(milliseconds: 100));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void playwrong() async {
+    try {
+      await audioPlayer.play(AssetSource("wrong.mp3"),
+          position: const Duration(milliseconds: 100));
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -429,10 +452,12 @@ class _MyHomePageState extends State<MyHomePage> {
       _state = "Correct";
       _color = Colors.green;
       _lottieURL = "assets/correct.json";
+      playsound();
       c.addScore();
     } else if (a + b != result) {
       _state = "Wrong !! correct answer: ${a + b}";
       _color = Colors.red;
+      playwrong();
       _lottieURL = "assets/wrong.json";
       life -= 1;
       _displayLife();
@@ -445,11 +470,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (a - b == result) {
       _state = "Correct";
       _color = Colors.green;
+      playsound();
       _lottieURL = "assets/correct.json";
       c.addScore();
     } else if (a - b != result) {
       _state = "Wrong !! correct answer: ${a - b}";
       _color = Colors.red;
+      playwrong();
       _lottieURL = "assets/wrong.json";
       life -= 1;
       _displayLife();
@@ -462,11 +489,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (a * b == result) {
       _state = "Correct";
       _color = Colors.green;
+      playsound();
       _lottieURL = "assets/correct.json";
       c.addScore();
     } else if (a * b != result) {
       _state = "Wrong !! correct answer: ${a * b}";
       _color = Colors.red;
+      playwrong();
       _lottieURL = "assets/wrong.json";
       life -= 1;
       _displayLife();
@@ -479,11 +508,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (a / b == result) {
       _state = "Correct";
       _color = Colors.green;
+      playsound();
       _lottieURL = "assets/correct.json";
       c.addScore();
     } else if (a / b != result) {
       _state = "Wrong !! correct answer: ${a ~/ b}";
       _color = Colors.red;
+      playwrong();
       _lottieURL = "assets/wrong.json";
       life -= 1;
       _displayLife();
@@ -532,7 +563,11 @@ class _MyHomePageState extends State<MyHomePage> {
         case 0:
           heart2 = FontAwesomeIcons.heart;
           heart1 = FontAwesomeIcons.heart;
-          _gameOver();
+          Future.delayed(const Duration(seconds: 2), () {
+            setState(() {
+              _gameOver();
+            });
+          });
           break;
       }
     });
