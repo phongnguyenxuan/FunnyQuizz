@@ -1,0 +1,115 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.something"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="19"
+9        android:targetSdkVersion="31" />
+10    <!--
+11         The INTERNET permission is required for development. Specifically,
+12         the Flutter tool needs it to communicate with the running application
+13         to allow setting breakpoints, to provide hot reload, etc.
+14    -->
+15    <uses-permission android:name="android.permission.INTERNET" />
+15-->D:\Android\something\android\app\src\debug\AndroidManifest.xml:7:5-66
+15-->D:\Android\something\android\app\src\debug\AndroidManifest.xml:7:22-64
+16
+17    <queries>
+17-->D:\Android\something\android\app\src\main\AndroidManifest.xml:3:5-16:11
+18        <intent>
+18-->D:\Android\something\android\app\src\main\AndroidManifest.xml:4:5-7:14
+19            <action android:name="android.intent.action.VIEW" />
+19-->D:\Android\something\android\app\src\main\AndroidManifest.xml:5:9-61
+19-->D:\Android\something\android\app\src\main\AndroidManifest.xml:5:17-58
+20
+21            <data android:scheme="https" />
+21-->D:\Android\something\android\app\src\main\AndroidManifest.xml:6:9-40
+21-->D:\Android\something\android\app\src\main\AndroidManifest.xml:6:15-37
+22        </intent>
+23        <intent>
+23-->D:\Android\something\android\app\src\main\AndroidManifest.xml:8:5-11:14
+24            <action android:name="android.intent.action.DIAL" />
+24-->D:\Android\something\android\app\src\main\AndroidManifest.xml:9:9-61
+24-->D:\Android\something\android\app\src\main\AndroidManifest.xml:9:17-58
+25
+26            <data android:scheme="tel" />
+26-->D:\Android\something\android\app\src\main\AndroidManifest.xml:6:9-40
+26-->D:\Android\something\android\app\src\main\AndroidManifest.xml:6:15-37
+27        </intent>
+28        <intent>
+28-->D:\Android\something\android\app\src\main\AndroidManifest.xml:12:5-15:14
+29            <action android:name="android.intent.action.SEND" />
+29-->D:\Android\something\android\app\src\main\AndroidManifest.xml:13:9-61
+29-->D:\Android\something\android\app\src\main\AndroidManifest.xml:13:17-58
+30
+31            <data android:mimeType="*/*" />
+31-->D:\Android\something\android\app\src\main\AndroidManifest.xml:6:9-40
+32        </intent>
+33    </queries>
+34
+35    <application
+36        android:name="android.app.Application"
+37        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+37-->[androidx.core:core:1.7.0] C:\Users\admin\.gradle\caches\transforms-3\1ef57eec9e43b3d8e5a7f4e2e2b93ce1\transformed\core-1.7.0\AndroidManifest.xml:24:18-86
+38        android:debuggable="true"
+39        android:icon="@mipmap/ic_launcher"
+40        android:label="Đố Vui" >
+41        <activity
+42            android:name="com.example.something.MainActivity"
+43            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+44            android:exported="true"
+45            android:hardwareAccelerated="true"
+46            android:launchMode="singleTop"
+47            android:theme="@style/LaunchTheme"
+48            android:windowSoftInputMode="adjustResize" >
+49
+50            <!--
+51                 Specifies an Android theme to apply to this Activity as soon as
+52                 the Android process has started. This theme is visible to the user
+53                 while the Flutter UI initializes. After that, this theme continues
+54                 to determine the Window background behind the Flutter UI.
+55            -->
+56            <meta-data
+57                android:name="io.flutter.embedding.android.NormalTheme"
+58                android:resource="@style/NormalTheme" />
+59
+60            <intent-filter>
+61                <action android:name="android.intent.action.MAIN" />
+62
+63                <category android:name="android.intent.category.LAUNCHER" />
+64            </intent-filter>
+65        </activity>
+66        <!--
+67             Don't delete the meta-data below.
+68             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+69        -->
+70        <meta-data
+71            android:name="flutterEmbedding"
+72            android:value="2" />
+73
+74        <activity
+74-->[:url_launcher_android] D:\Android\something\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:10:9-13:74
+75            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+75-->[:url_launcher_android] D:\Android\something\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-74
+76            android:exported="false"
+76-->[:url_launcher_android] D:\Android\something\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-37
+77            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+77-->[:url_launcher_android] D:\Android\something\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-71
+78
+79        <uses-library
+79-->[androidx.window:window:1.0.0-beta04] C:\Users\admin\.gradle\caches\transforms-3\542a859793ec57d6a4d40865c7efc6d9\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
+80            android:name="androidx.window.extensions"
+80-->[androidx.window:window:1.0.0-beta04] C:\Users\admin\.gradle\caches\transforms-3\542a859793ec57d6a4d40865c7efc6d9\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:26:13-54
+81            android:required="false" />
+81-->[androidx.window:window:1.0.0-beta04] C:\Users\admin\.gradle\caches\transforms-3\542a859793ec57d6a4d40865c7efc6d9\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:27:13-37
+82        <uses-library
+82-->[androidx.window:window:1.0.0-beta04] C:\Users\admin\.gradle\caches\transforms-3\542a859793ec57d6a4d40865c7efc6d9\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:28:9-30:40
+83            android:name="androidx.window.sidecar"
+83-->[androidx.window:window:1.0.0-beta04] C:\Users\admin\.gradle\caches\transforms-3\542a859793ec57d6a4d40865c7efc6d9\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:29:13-51
+84            android:required="false" />
+84-->[androidx.window:window:1.0.0-beta04] C:\Users\admin\.gradle\caches\transforms-3\542a859793ec57d6a4d40865c7efc6d9\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:30:13-37
+85    </application>
+86
+87</manifest>

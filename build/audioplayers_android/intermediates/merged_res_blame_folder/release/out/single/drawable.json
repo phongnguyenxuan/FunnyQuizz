@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "D:\\Android\\something\\build\\audioplayers_android\\intermediates\\merged_res\\release\\drawable\\notification_icon_background.xml",
+        "source": "C:\\Users\\admin\\.gradle\\caches\\transforms-3\\1ef57eec9e43b3d8e5a7f4e2e2b93ce1\\transformed\\core-1.7.0\\res\\drawable\\notification_icon_background.xml"
+    },
+    {
+        "merged": "D:\\Android\\something\\build\\audioplayers_android\\intermediates\\merged_res\\release\\drawable\\notification_bg_low.xml",
+        "source": "C:\\Users\\admin\\.gradle\\caches\\transforms-3\\1ef57eec9e43b3d8e5a7f4e2e2b93ce1\\transformed\\core-1.7.0\\res\\drawable\\notification_bg_low.xml"
+    },
+    {
+        "merged": "D:\\Android\\something\\build\\audioplayers_android\\intermediates\\merged_res\\release\\drawable\\notification_tile_bg.xml",
+        "source": "C:\\Users\\admin\\.gradle\\caches\\transforms-3\\1ef57eec9e43b3d8e5a7f4e2e2b93ce1\\transformed\\core-1.7.0\\res\\drawable\\notification_tile_bg.xml"
+    },
+    {
+        "merged": "D:\\Android\\something\\build\\audioplayers_android\\intermediates\\merged_res\\release\\drawable\\notification_bg.xml",
+        "source": "C:\\Users\\admin\\.gradle\\caches\\transforms-3\\1ef57eec9e43b3d8e5a7f4e2e2b93ce1\\transformed\\core-1.7.0\\res\\drawable\\notification_bg.xml"
+    }
+]

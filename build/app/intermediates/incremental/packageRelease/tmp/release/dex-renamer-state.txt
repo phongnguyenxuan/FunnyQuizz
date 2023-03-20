@@ -1,0 +1,4 @@
+#Wed Oct 12 22:45:00 ICT 2022
+base.0=D\:\\Android\\something\\build\\app\\intermediates\\dex\\release\\minifyReleaseWithR8\\classes.dex
+renamed.0=classes.dex
+path.0=classes.dex
