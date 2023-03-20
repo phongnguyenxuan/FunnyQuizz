@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import 'package:something/config/player.dart';
-import 'package:something/config/playerController.dart';
-import 'package:something/config/score.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:something/object/player_controller.dart';
+import 'package:something/object/score.dart';
 import 'package:something/pages/Rank.dart';
+import 'package:something/theme/my_color.dart';
+import 'package:something/theme/my_font.dart';
+import 'package:something/theme/mybutton.dart';
+
+import '../object/player.dart';
 
 class AddHighScore extends StatefulWidget {
   const AddHighScore({Key? key}) : super(key: key);
@@ -18,153 +22,174 @@ class AddHighScore extends StatefulWidget {
 }
 
 class _AddHighScoreState extends State<AddHighScore> {
-  late TextEditingController controller;
-  bool isbuttonactive = false;
-  scoreController score = Get.put(scoreController());
+  TextEditingController controller = TextEditingController();
+  Score scoreController = Get.put(Score());
   PlayerController playerController = Get.put(PlayerController());
-  late int sc;
+  //audio
   late AudioPlayer audioPlayer;
+  // ignore: unnecessary_new
   AudioCache audioCache = new AudioCache();
+  late int _score;
+  late String read = '';
   @override
   void initState() {
-    sc = score.score.toInt();
+    _score = scoreController.score.toInt();
     super.initState();
     audioPlayer = AudioPlayer();
     audioCache.prefix = "assets/";
     audioPlayer.play(AssetSource("winning.mp3"),
-        position: const Duration(milliseconds: 100));
-    controller = TextEditingController();
-    controller.addListener(() {
-      final isbuttonactive = controller.text.isNotEmpty;
-      setState(() {
-        this.isbuttonactive = isbuttonactive;
-      });
-    });
+        position: const Duration(milliseconds: 0));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: myColor().background,
       body: SafeArea(
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.black, width: 5)),
-          child: Center(
-            child: Column(
-              children: [
-                Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: Text(
-                            "New highscore",
-                            style: GoogleFonts.fuzzyBubbles(
-                                textStyle: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.black)),
-                          ),
+              border: Border.all(color: Colors.black, width: 2)),
+          child: Column(
+            children: [
+              Flexible(
+                flex: 2,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20, bottom: 20),
+                        child: Text("Điểm cao mới", style: MyFont().header),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 230,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Lottie.asset(
+                              "assets/lottie/firework.json",
+                            ),
+                            Image.asset(
+                              "assets/images/trophy.png",
+                              width: 70,
+                              height: 70,
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: SizedBox(
-                              width: 200,
-                              height: 200,
-                              child: Lottie.asset("assets/cup.json",
-                                  repeat: true)),
-                        ),
-                      ],
-                    ),
+                      )
+                    ],
                   ),
                 ),
-                Expanded(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Column(
-                      children: [
-                        Text(
-                          "Enter your name",
-                          style: GoogleFonts.fuzzyBubbles(
-                              textStyle: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black)),
-                        ),
-                        Container(
-                          width: 300,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(color: Colors.black, width: 2),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: TextFormField(
-                              autofocus: false,
-                              cursorColor: Colors.black,
-                              controller: controller,
-                              decoration: const InputDecoration(
-                                focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.white, width: 0)),
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.white, width: 0)),
-                              ),
+              ),
+              Flexible(
+                flex: 1,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    children: [
+                      Text(
+                        "Enter your name",
+                        style: MyFont().body,
+                      ),
+                      Container(
+                        width: 300,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.black, width: 2),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: TextFormField(
+                            style: MyFont().body,
+                            autofocus: false,
+                            cursorColor: Colors.black,
+                            controller: controller,
+                            decoration: const InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 0)),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 0)),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: ElevatedButton.icon(
-                              onPressed: isbuttonactive
-                                  ? () {
-                                      _addScoreToDatabase();
-                                      playerController.getPlayer();
-                                      Get.to(const Rank());
-                                    }
-                                  : null,
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          horizontal: 20, vertical: 10)),
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.green),
-                                  shape: MaterialStateProperty.all(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20)))),
-                              icon: const FaIcon(FontAwesomeIcons.check),
-                              label: Text(
-                                "submit",
-                                style: GoogleFonts.fuzzyBubbles(
-                                    textStyle: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w900,
-                                )),
-                              )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: MyButton(
+                          icon: FontAwesomeIcons.check,
+                          color: myColor().green,
+                          width: 150,
+                          height: 50,
+                          fontSize: 15,
+                          padding: 20,
+                          ontap: () {
+                            checkNull();
+                          },
                         ),
-                      ],
-                    ),
+                      )
+                    ],
                   ),
-                )
-                //  const Spacer(),
-              ],
-            ),
+                ),
+              ) //  const Spacer(),
+            ],
           ),
         ),
       ),
     );
   }
 
-  _addScoreToDatabase() async {
+  checkNull() {
+    if (controller.text == "") {
+      Get.snackbar("", "",
+          reverseAnimationCurve: Curves.easeInOutBack,
+          duration: const Duration(milliseconds: 1500),
+          snackPosition: SnackPosition.TOP,
+          titleText: Image.asset(
+            "assets/images/wrong.png",
+            width: 100,
+            height: 100,
+          ),
+          messageText: Text("Bạn không được để trống tên",
+              textAlign: TextAlign.center, style: MyFont().body),
+          boxShadows: const [
+            BoxShadow(
+                color: Colors.black54,
+                offset: Offset(0, 5),
+                blurRadius: 2,
+                spreadRadius: 1)
+          ],
+          backgroundColor: Colors.white,
+          colorText: Colors.black,
+          borderWidth: 2,
+          borderColor: Colors.black);
+    } else {
+      _addPlayer();
+      Future.delayed(const Duration(milliseconds: 270), () {
+        Navigator.push(
+            context,
+            PageTransition(
+              child: const Rank(),
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.elasticInOut,
+              type: PageTransitionType.fade,
+            ));
+      });
+    }
+  }
+
+  _addPlayer() async {
+    // ignore: unused_local_variable
     int value = await playerController.addPlayer(
-        player: Player(score: sc, name: controller.text));
+        player: Player(
+      name: controller.text.toString(),
+      score: _score,
+    ));
   }
 }

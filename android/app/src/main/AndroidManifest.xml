@@ -15,7 +15,7 @@
     </intent>
 </queries>
    <application
-        android:label="Let's Math"
+        android:label="Đố Vui"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

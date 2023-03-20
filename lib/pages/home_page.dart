@@ -1,19 +1,22 @@
-import 'dart:async';
-
 import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/scheduler.dart';
+
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:something/config/playerController.dart';
-import 'package:something/config/score.dart';
+import 'package:something/object/player_controller.dart';
+import 'package:something/object/questions_controller.dart';
+import 'package:something/object/score.dart';
+import 'package:something/pages/Menu.dart';
 import 'package:something/pages/add_high_score.dart';
+import 'package:something/pages/complete.dart';
 import 'package:something/pages/game_Over.dart';
+import 'package:something/theme/my_color.dart';
+import 'package:something/theme/my_font.dart';
 import 'package:something/theme/my_input.dart';
+import 'package:something/theme/mybutton.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -23,87 +26,253 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final playerController = Get.put(PlayerController());
-  var randomA = Random();
-  var randomB = Random();
-  late int a = randomA.nextInt(250);
-  late int b = randomB.nextInt(250);
-  var Calcu = ["+", "-", "x", "/"];
-  var randomCalcu = Random();
-  late var _math = Calcu[randomCalcu.nextInt(Calcu.length)];
-  String dapan = "?";
-  String _state = " ";
-  Color _color = Colors.black;
-  Color _colorTime = Colors.black;
-  TextEditingController controller = TextEditingController();
-  //life icon
-  int life = 3;
-  IconData heart1 = FontAwesomeIcons.solidHeart;
-  IconData heart2 = FontAwesomeIcons.solidHeart;
-  IconData heart3 = FontAwesomeIcons.solidHeart;
-  //lottie
-  String _lottieURL = "assets/question.json";
-  //timer
-  late Timer _timer;
-  int _time = 30;
-  //score
-  scoreController c = Get.put(scoreController());
+  PlayerController playerController = Get.put(PlayerController());
+  late QuestionsController questionsController;
   //audio
   late AudioPlayer audioPlayer;
+  // ignore: unnecessary_new
   AudioCache audioCache = new AudioCache();
+  late String answer1;
+  late String answer2;
+  late String answer3;
+  late String answer4;
+  late String result;
+  late String question;
+  late String correct;
+  late int i;
+  late bool isClick = false;
+  var listAns = [];
+  var listIndex = [0, 1, 2, 3];
+  //score
+  Score scoreController = Get.put(Score());
+  //quotes
+  var quotes = [
+    "Sai rồi chúc bạn may mắn lần sau",
+    "Đang đoán mò hay gì thế ?",
+    "Trái nghĩa với đúng là sai đấy :))",
+    "IQ vô cực",
+    "IQ 10000000000 tỷ",
+    "Sai đâu còn không biết à ?",
+    "Vui làm gì. Trầm cảm lên em",
+    "Hãy nhìn vào ánh mắt chân thành này của tôi. Tôi thật sự không lừa bạn.",
+    "Nhìn phát biết ngay đây đích thị không phải là đáp án",
+    "Thôiiiiiiiiiiiiiiiiii",
+    "Yamete kudasai",
+    "Tatakae...tatakae..tatakaeeeeeeee!!",
+    "Không giòn !!",
+    "Never Gonna Give You Up"
+  ];
+  var randomQuotes = Random();
+  late var wrong = quotes[randomQuotes.nextInt(quotes.length)];
+  //life
+  late int life;
+  late bool heart1;
+  late bool heart2;
+  late bool heart3;
+  //
+  var image = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+    '24',
+    '25',
+  ];
+  var random = Random();
+  late var avatar = image[random.nextInt(image.length)];
   @override
   void initState() {
     super.initState();
-    c.score = 0.obs;
+    questionsController = Get.put(QuestionsController());
     audioPlayer = AudioPlayer();
     audioCache.prefix = "assets/";
-    setState(() {
-      _timeCounter();
-      _checkNum();
-      _checkDivision();
-      _checkMulti();
-    });
+    //reset
+    i = 0;
+    life = 3;
+    heart1 = true;
+    heart2 = true;
+    heart3 = true;
+    scoreController.score = 0.obs;
+    //shuffle answer
+    listIndex.shuffle();
   }
 
-  void playsound() async {
+  void playcorrect() async {
     try {
       await audioPlayer.play(AssetSource("correct.mp3"),
-          position: const Duration(milliseconds: 100));
+          position: const Duration(milliseconds: 0));
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
   void playwrong() async {
     try {
       await audioPlayer.play(AssetSource("wrong.mp3"),
-          position: const Duration(milliseconds: 100));
+          position: const Duration(milliseconds: 0));
     } catch (e) {
-      print(e);
+      //  print(e);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: myColor().background,
+        body: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.black, width: 2)),
-          child: Stack(
+          child: _inputAnswer(),
+        ),
+      ),
+    );
+  }
+
+  Obx _inputAnswer() {
+    return Obx(() {
+      if (questionsController.listQuestions.isNotEmpty) {
+        //get answer
+        listAns = [
+          questionsController.listQuestions.elementAt(i).answer1.toString(),
+          questionsController.listQuestions.elementAt(i).answer2.toString(),
+          questionsController.listQuestions.elementAt(i).answer3.toString(),
+          questionsController.listQuestions.elementAt(i).answer4.toString()
+        ];
+        //shuffle list answer
+        answer1 = listAns.elementAt(listIndex.elementAt(0)).toString();
+        answer2 = listAns.elementAt(listIndex.elementAt(1)).toString();
+        answer3 = listAns.elementAt(listIndex.elementAt(2)).toString();
+        answer4 = listAns.elementAt(listIndex.elementAt(3)).toString();
+        //get result
+        result =
+            questionsController.listQuestions.elementAt(i).result.toString();
+        //get question
+        question =
+            questionsController.listQuestions.elementAt(i).question.toString();
+        correct =
+            questionsController.listQuestions.elementAt(i).correct.toString();
+
+        return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [header(), body()]);
+      } else {
+        return Container();
+      }
+    });
+  }
+
+  Flexible body() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return Flexible(
+      flex: 1,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: SizedBox(
+          width: width,
+          child: Column(
             children: [
-              Column(
-                children: [
-                  _lifeBar(),
-                  Expanded(flex: 4, child: _Questions(context)),
-                  Expanded(flex: 2, child: _inputAnswer()),
-                  const Spacer(),
-                ],
-              )
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text("Đáp án", style: MyFont().header),
+              ),
+              //choice answer
+              isClick == true
+                  ? MyButton(
+                      padding: 15,
+                      text: answer1,
+                      color: myColor().ans1,
+                      width: width * 0.7,
+                      height: height * 0.07,
+                      fontSize: 15)
+                  : MyButton(
+                      padding: 15,
+                      text: answer1,
+                      color: myColor().ans1,
+                      width: width * 0.7,
+                      height: height * 0.07,
+                      ontap: () {
+                        checkResult(answer1, result);
+                      },
+                      fontSize: 15),
+              isClick == true
+                  ? MyButton(
+                      padding: 15,
+                      text: answer2,
+                      color: myColor().ans2,
+                      width: width * 0.7,
+                      height: height * 0.07,
+                      fontSize: 15)
+                  : MyButton(
+                      padding: 15,
+                      text: answer2,
+                      color: myColor().ans2,
+                      width: width * 0.7,
+                      height: height * 0.07,
+                      ontap: () {
+                        checkResult(answer2, result);
+                      },
+                      fontSize: 15),
+              isClick == true
+                  ? MyButton(
+                      padding: 15,
+                      text: answer3,
+                      color: myColor().ans3,
+                      width: width * 0.7,
+                      height: height * 0.07,
+                      fontSize: 15)
+                  : MyButton(
+                      padding: 15,
+                      text: answer3,
+                      color: myColor().ans3,
+                      width: width * 0.7,
+                      height: height * 0.07,
+                      ontap: () {
+                        checkResult(answer3, result);
+                      },
+                      fontSize: 15),
+              isClick == true
+                  ? MyButton(
+                      padding: 15,
+                      text: answer4,
+                      color: myColor().ans4,
+                      width: width * 0.7,
+                      height: height * 0.07,
+                      fontSize: 15)
+                  : MyButton(
+                      padding: 15,
+                      text: answer4,
+                      color: myColor().ans4,
+                      width: width * 0.7,
+                      height: height * 0.07,
+                      ontap: () {
+                        checkResult(answer4, result);
+                      },
+                      fontSize: 15),
             ],
           ),
         ),
@@ -111,492 +280,288 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Column _inputAnswer() {
-    return Column(children: [
-      const Padding(padding: EdgeInsets.only(top: 15)),
-      Expanded(
-        flex: 1,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text("$_state",
-              style: GoogleFonts.fuzzyBubbles(
-                  textStyle: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: _color))),
-        ),
-      ),
-      const Padding(padding: EdgeInsets.only(top: 15)),
-      Expanded(
-        flex: 1,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text("Answer: ",
-              style: GoogleFonts.fuzzyBubbles(
-                  textStyle: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black))),
-        ),
-      ),
-      Expanded(
-        flex: 3,
-        child: FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Container(
-              width: 300,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black, width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Colors.black,
-                        offset: const Offset(0, 6),
-                        spreadRadius: 2)
-                  ]),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: TextFormField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly
-                  ],
-                  autofocus: false,
-                  cursorColor: Colors.black,
-                  controller: controller,
-                  onTap: () {},
-                  onFieldSubmitted: (value) {
-                    setState(() {
-                      dapan = controller.text;
-                      _checkResult();
-                    });
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      dapan = controller.text;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white, width: 0)),
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white, width: 0)),
+  Flexible header() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    return Flexible(
+      flex: 1,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: SizedBox(
+          width: width,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2, top: 2),
+                    child: MyButton(
+                        padding: 2,
+                        ontap: () {
+                          questionsController.shuffle();
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.elasticInOut,
+                              type: PageTransitionType.leftToRight,
+                              child: const Menu(),
+                            ),
+                          );
+                        },
+                        color: myColor().exit,
+                        width: 30,
+                        height: 30,
+                        text: "X",
+                        fontSize: 13),
+                  ),
+                  //life
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Visibility(
+                        visible: heart1,
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Image.asset(
+                            "assets/images/heart.png",
+                            scale: 1.5,
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: heart2,
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Image.asset(
+                            "assets/images/heart.png",
+                            scale: 1.5,
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: heart3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Image.asset(
+                            "assets/images/heart.png",
+                            scale: 1.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              Container(
+                color: Colors.black,
+                width: width,
+                height: 2,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/$avatar.png",
+                    width: 50,
+                    height: 50,
                   ),
                 ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 7),
+                child: Center(
+                  child: Text(
+                    "Câu ${i + 1}",
+                    style: MyFont().header,
+                  ),
+                ),
+              ),
+              Center(
+                child: MyInput(
+                    width: width * 0.86,
+                    height: height * 0.26,
+                    color: myColor().board,
+                    question: question),
+              ),
+            ],
           ),
         ),
-      ),
-    ]);
-  }
-
-  Column _Questions(BuildContext context) {
-    return Column(children: [
-      Expanded(
-          child: FractionallySizedBox(
-              widthFactor: 1,
-              heightFactor: 1,
-              child: Lottie.asset(_lottieURL))),
-      Expanded(
-        child: FractionallySizedBox(
-          heightFactor: 0.2,
-          child: FittedBox(
-            fit: BoxFit.cover,
-            child: Text(
-              "Question",
-              style: GoogleFonts.fuzzyBubbles(
-                  textStyle: const TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.black)),
-            ),
-          ),
-        ),
-      ),
-      Expanded(
-        child: FractionallySizedBox(
-          heightFactor: 0.8,
-          child: FittedBox(
-            fit: BoxFit.cover,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  MyInput(
-                    number: a.toString(),
-                  ),
-                  Container(
-                      margin: const EdgeInsets.only(left: 20),
-                      child: Text("$_math",
-                          style: GoogleFonts.fuzzyBubbles(
-                              textStyle: const TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black)))),
-                  MyInput(
-                    number: b.toString(),
-                  ),
-                  Container(
-                      margin: const EdgeInsets.only(left: 20),
-                      child: Text("=",
-                          style: GoogleFonts.fuzzyBubbles(
-                              textStyle: const TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black)))),
-                  MyInput(
-                    number: dapan,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    ]);
-  }
-
-  Padding _lifeBar() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 2),
-                    child: FaIcon(
-                      heart1,
-                      color: Colors.red,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 2),
-                    child: FaIcon(
-                      heart2,
-                      color: Colors.red,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 2),
-                    child: FaIcon(
-                      heart3,
-                      color: Colors.red,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const Spacer(
-            flex: 2,
-          ),
-          Expanded(
-            flex: 1,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Column(
-                children: [
-                  Obx(
-                    () => Text(
-                      "Scores: ${c.score}",
-                      style: GoogleFonts.fuzzyBubbles(
-                          textStyle: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black)),
-                    ),
-                  ),
-                  RichText(
-                      text: TextSpan(
-                          text: "Time left: ",
-                          style: GoogleFonts.fuzzyBubbles(
-                              textStyle: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.black)),
-                          children: [
-                        TextSpan(
-                          text: "$_time",
-                          style: GoogleFonts.fuzzyBubbles(
-                              textStyle: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w900,
-                                  color: _colorTime)),
-                        )
-                      ]))
-                ],
-              ),
-            ),
-          )
-        ],
       ),
     );
   }
 
-  _timeCounter() {
-    const onSec = Duration(seconds: 1);
-    _timer = Timer.periodic(onSec, (timer) {
-      if (_time <= 6) {
+  void checkResult(String answer, String result) {
+    //check result
+    if (answer == result) {
+      playcorrect();
+      //add score
+      scoreController.addScore();
+      Future.delayed(const Duration(milliseconds: 2000), () {
         setState(() {
-          _colorTime = Colors.red;
-        });
-      }
-      if (_time == 0) {
-        setState(() {
-          timer.cancel();
-          _color = Colors.red;
-          _state = "Time out";
-        });
-        _nextQuestion();
-        _timeCounter();
-        life -= 1;
-        _displayLife();
-      } else {
-        setState(() {
-          _time--;
-        });
-      }
-    });
-  }
-
-  _checkNum() {
-    if (_math == "-") {
-      setState(() {
-        int temp = a;
-        if (a < b) {
-          a = b;
-          b = temp;
-        } else {
-          a = a;
-          b = b;
-        }
-      });
-    }
-  }
-
-  _checkResult() {
-    setState(() {
-      try {
-        if (dapan == "?" || dapan == "") {
-          _color = Colors.red;
-          _state = "Enter your answer";
-        }
-
-        _mathCheck();
-
-        //next sang cau moi
-      } catch (e) {
-        print(e);
-      }
-    });
-  }
-
-  _checkDivision() {
-    if (_math == "/") {
-      for (;;) {
-        if (a % b == 0 && b != 0) {
-          setState(() {
-            a = a;
-            b = b;
-          });
-          break;
-        } else {
-          a = randomA.nextInt(100);
-          b = randomB.nextInt(100) + 1;
-          _checkDivision();
-        }
-      }
-    }
-  }
-
-  _checkMulti() {
-    if (_math == "x") {
-      a = randomA.nextInt(20);
-      b = randomB.nextInt(20);
-    }
-  }
-
-  _mathCheck() {
-    setState(() {
-      switch (_math) {
-        case "+":
-          _add();
-          break;
-        case "-":
-          _minus();
-          break;
-        case "x":
-          _multiplication();
-          break;
-        case "/":
-          _division();
-          break;
-      }
-    });
-  }
-
-  _add() {
-    int result = int.parse(dapan);
-    if (a + b == result) {
-      _state = "Correct";
-      _color = Colors.green;
-      _lottieURL = "assets/correct.json";
-      playsound();
-      c.addScore();
-    } else if (a + b != result) {
-      _state = "Wrong !! correct answer: ${a + b}";
-      _color = Colors.red;
-      playwrong();
-      _lottieURL = "assets/wrong.json";
-      life -= 1;
-      _displayLife();
-    }
-    _nextQuestion();
-  }
-
-  _minus() {
-    int result = int.parse(dapan);
-    if (a - b == result) {
-      _state = "Correct";
-      _color = Colors.green;
-      playsound();
-      _lottieURL = "assets/correct.json";
-      c.addScore();
-    } else if (a - b != result) {
-      _state = "Wrong !! correct answer: ${a - b}";
-      _color = Colors.red;
-      playwrong();
-      _lottieURL = "assets/wrong.json";
-      life -= 1;
-      _displayLife();
-    }
-    _nextQuestion();
-  }
-
-  _multiplication() {
-    int result = int.parse(dapan);
-    if (a * b == result) {
-      _state = "Correct";
-      _color = Colors.green;
-      playsound();
-      _lottieURL = "assets/correct.json";
-      c.addScore();
-    } else if (a * b != result) {
-      _state = "Wrong !! correct answer: ${a * b}";
-      _color = Colors.red;
-      playwrong();
-      _lottieURL = "assets/wrong.json";
-      life -= 1;
-      _displayLife();
-    }
-    _nextQuestion();
-  }
-
-  _division() {
-    double result = double.parse(dapan);
-    if (a / b == result) {
-      _state = "Correct";
-      _color = Colors.green;
-      playsound();
-      _lottieURL = "assets/correct.json";
-      c.addScore();
-    } else if (a / b != result) {
-      _state = "Wrong !! correct answer: ${a ~/ b}";
-      _color = Colors.red;
-      playwrong();
-      _lottieURL = "assets/wrong.json";
-      life -= 1;
-      _displayLife();
-    }
-    _nextQuestion();
-  }
-
-  _nextQuestion() {
-    _time = 30;
-    _colorTime = Colors.black;
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        a = randomA.nextInt(250);
-        b = randomB.nextInt(250);
-        //  _checkNum();
-        _math = Calcu[randomCalcu.nextInt(Calcu.length)];
-        if (_math == "-") {
-          _checkNum();
-        }
-        if (_math == "/") {
-          _checkDivision();
-        }
-        if (_math == "x") {
-          _checkMulti();
-        }
-        controller.text = "";
-        dapan = "?";
-        _state = " ";
-        _lottieURL = "assets/question.json";
-      });
-    });
-  }
-
-  _displayLife() {
-    setState(() {
-      switch (life) {
-        case 3:
-          break;
-        case 2:
-          heart3 = FontAwesomeIcons.heart;
-          break;
-        case 1:
-          heart3 = FontAwesomeIcons.heart;
-          heart2 = FontAwesomeIcons.heart;
-          break;
-        case 0:
-          heart2 = FontAwesomeIcons.heart;
-          heart1 = FontAwesomeIcons.heart;
-          Future.delayed(const Duration(seconds: 2), () {
-            setState(() {
-              _gameOver();
+          //next questions
+          i++;
+          avatar = image[random.nextInt(image.length)];
+          //complete all questions
+          if (i == questionsController.listQuestions.length) {
+            i = 0;
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              Navigator.push(
+                context,
+                PageTransition(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.elasticInOut,
+                  type: PageTransitionType.fade,
+                  child: const CompletePage(),
+                ),
+              );
             });
+          }
+        });
+      });
+      //show snackbar
+      Get.snackbar("", "", snackbarStatus: (status) {
+        //is click = true
+        if (status == SnackbarStatus.OPENING ||
+            status == SnackbarStatus.OPEN ||
+            status == SnackbarStatus.CLOSING) {
+          setState(() {
+            isClick = true;
           });
-          break;
+        }
+        //if status == CLOSED
+        else if (status == SnackbarStatus.CLOSED) {
+          setState(() {
+            isClick = false;
+          });
+        }
+      },
+          reverseAnimationCurve: Curves.easeInOutBack,
+          duration: const Duration(milliseconds: 1500),
+          snackPosition: SnackPosition.TOP,
+          titleText: Image.asset(
+            "assets/images/correct.png",
+            width: 100,
+            height: 100,
+          ),
+          messageText:
+              Text(correct, textAlign: TextAlign.center, style: MyFont().body),
+          boxShadows: const [
+            BoxShadow(
+                color: Colors.black54,
+                offset: Offset(0, 5),
+                blurRadius: 2,
+                spreadRadius: 1)
+          ],
+          backgroundColor: Colors.white,
+          colorText: Colors.black,
+          borderWidth: 2,
+          borderColor: Colors.black);
+    } else {
+      //sound effect
+      playwrong();
+      //show life bar   //check result
+      setState(() {
+        wrong = quotes[randomQuotes.nextInt(quotes.length)];
+        life -= 1;
+        showLife(life);
+      });
+      if (life == 0 && isClick == false) {
+        scoreController.getResult(result);
+        //Game Over
+        Future.delayed(const Duration(milliseconds: 2100), () {
+          //list rong va diem choi lon hon diem cao nhat
+          if (playerController.listPlayer.isEmpty ||
+              scoreController.score.toInt() >
+                  playerController.listPlayer.elementAt(0).score!) {
+            Navigator.push(
+              context,
+              PageTransition(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.elasticInOut,
+                type: PageTransitionType.fade,
+                child: const AddHighScore(),
+              ),
+            );
+          } else {
+            Navigator.push(
+              context,
+              PageTransition(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.elasticInOut,
+                type: PageTransitionType.fade,
+                child: const GameOver(),
+              ),
+            );
+          }
+        });
       }
-    });
+      //show snackbar
+      Get.snackbar("", "", snackbarStatus: (status) {
+        //is click = true
+        if (status == SnackbarStatus.OPENING ||
+            status == SnackbarStatus.OPEN ||
+            status == SnackbarStatus.CLOSING) {
+          setState(() {
+            isClick = true;
+          });
+        }
+        //if status == CLOSED
+        else if (status == SnackbarStatus.CLOSED) {
+          setState(() {
+            isClick = false;
+          });
+        }
+      },
+          reverseAnimationCurve: Curves.easeInOutBack,
+          duration: const Duration(milliseconds: 1500),
+          snackPosition: SnackPosition.TOP,
+          titleText: Image.asset(
+            "assets/images/wrong.png",
+            width: 100,
+            height: 100,
+          ),
+          messageText:
+              Text(wrong, textAlign: TextAlign.center, style: MyFont().body),
+          boxShadows: const [
+            BoxShadow(
+                color: Colors.black54,
+                offset: Offset(0, 5),
+                blurRadius: 2,
+                spreadRadius: 1)
+          ],
+          backgroundColor: Colors.white,
+          colorText: Colors.black,
+          borderWidth: 2,
+          borderColor: Colors.black);
+    }
   }
 
-  _gameOver() {
-    if (playerController.playerList.isEmpty) {
-      Get.to(const AddHighScore());
-    } else if (playerController.playerList.isNotEmpty) {
-      for (int i = 0; i < playerController.playerList.length; i++) {
-        int sc = playerController.playerList[0].score!;
-        if (c.score > sc) {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.fade,
-              child: const AddHighScore(),
-            ),
-          );
-        } else {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.fade,
-              child: const GameOver(),
-            ),
-          );
-        }
-      }
+//show lifebar
+  void showLife(int life) {
+    switch (life) {
+      case 1:
+        heart1 = true;
+        heart2 = false;
+        heart3 = false;
+        break;
+      case 2:
+        heart1 = true;
+        heart2 = true;
+        heart3 = false;
+        break;
+      case 3:
+        heart1 = true;
+        heart2 = true;
+        heart3 = true;
+        break;
+      case 0:
+        heart1 = false;
+        heart2 = false;
+        heart3 = false;
+        break;
     }
   }
 }

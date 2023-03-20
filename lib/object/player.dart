@@ -1,21 +1,23 @@
 class Player {
-  int? score;
+  int? id;
   String? name;
-
+  int? score;
   Player({
-    this.score,
+    this.id,
     this.name,
+    this.score,
   });
-
   Player.fromJson(Map<String, dynamic> json) {
-    score = json["score"];
+    id = json["id"];
     name = json["name"];
+    score = json["score"];
   }
-
   Map<String, dynamic> toJson() {
+    // ignore: prefer_collection_literals
     final Map<String, dynamic> data = Map<String, dynamic>();
-    data["score"] = score;
+    data["id"] = id;
     data["name"] = name;
+    data["score"] = score;
     return data;
   }
 }

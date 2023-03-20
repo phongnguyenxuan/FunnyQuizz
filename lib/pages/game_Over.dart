@@ -1,13 +1,18 @@
+// ignore_for_file: file_names
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:something/config/playerController.dart';
-import 'package:something/config/score.dart';
+import 'package:something/object/player_controller.dart';
+import 'package:something/object/questions_controller.dart';
+import 'package:something/object/score.dart';
 import 'package:something/pages/Menu.dart';
 import 'package:something/pages/home_page.dart';
+import 'package:something/theme/my_font.dart';
 import 'package:something/theme/mybutton.dart';
+
+import '../theme/my_color.dart';
 
 class GameOver extends StatefulWidget {
   const GameOver({Key? key}) : super(key: key);
@@ -17,14 +22,23 @@ class GameOver extends StatefulWidget {
 }
 
 class _GameOverState extends State<GameOver> {
-  scoreController c = Get.put(scoreController());
+  QuestionsController questionsController = Get.put(QuestionsController());
+  //score
+  Score scoreController = Get.put(Score());
+  //player
   PlayerController playerController = Get.put(PlayerController());
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: myColor().background,
       body: SafeArea(
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
@@ -34,75 +48,114 @@ class _GameOverState extends State<GameOver> {
             children: <Widget>[
               const Padding(padding: EdgeInsets.only(top: 20)),
               Expanded(
-                child: Column(
-                  children: [
-                    const FaIcon(
-                      FontAwesomeIcons.skull,
-                      size: 50,
-                      color: Colors.black,
-                    ),
-                    Text("Game Over",
-                        style: GoogleFonts.fuzzyBubbles(
-                            textStyle: const TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.black))),
-                  ],
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        "assets/images/game_over.png",
+                        width: 100,
+                        height: 100,
+                      ),
+                      const Padding(padding: EdgeInsets.all(10)),
+                      Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.all(2),
+                          width: 330,
+                          height: 250,
+                          decoration: BoxDecoration(
+                              color: myColor().board,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black, width: 2),
+                              boxShadow: [
+                                const BoxShadow(
+                                    color: Colors.black,
+                                    offset: Offset(0, 0),
+                                    spreadRadius: 4),
+                                BoxShadow(
+                                    color: myColor().black,
+                                    offset: const Offset(0, 0),
+                                    spreadRadius: 2)
+                              ]),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                  "Điểm của bạn: ${scoreController.score.toInt()}",
+                                  textAlign: TextAlign.start,
+                                  style: MyFont().body),
+                              const Padding(padding: EdgeInsets.all(5)),
+                              Text(
+                                  textAlign: TextAlign.start,
+                                  "Điểm cao nhất: ${playerController.listPlayer.elementAt(0).score}",
+                                  style: MyFont().body),
+                              const Padding(padding: EdgeInsets.all(5)),
+                              AutoSizeText(
+                                  "Đáp án đúng: ${scoreController.result.value}",
+                                  textAlign: TextAlign.center,
+                                  minFontSize: 12,
+                                  maxLines: 2,
+                                  style: MyFont().body),
+                            ],
+                          )),
+                    ],
+                  ),
                 ),
               ),
               Expanded(
-                child: Column(
-                  children: [
-                    Text("Your Score: ${c.score}",
-                        style: GoogleFonts.fuzzyBubbles(
-                            textStyle: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black))),
-                    Text("Best Score:  ${playerController.playerList[0].score}",
-                        style: GoogleFonts.fuzzyBubbles(
-                            textStyle: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black))),
-                  ],
+                flex: 1,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    children: [
+                      MyButton(
+                        padding: 15,
+                        fontSize: 15,
+                        width: 150,
+                        height: 50,
+                        color: myColor().green,
+                        text: "Chơi lại",
+                        ontap: () {
+                          questionsController.shuffle();
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.elasticInOut,
+                              type: PageTransitionType.fade,
+                              child: const MyHomePage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Padding(padding: EdgeInsets.only(top: 30)),
+                      MyButton(
+                        padding: 15,
+                        fontSize: 15,
+                        width: 150,
+                        height: 50,
+                        color: myColor().red,
+                        text: "Trang chủ",
+                        ontap: () {
+                          questionsController.shuffle();
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.elasticInOut,
+                              type: PageTransitionType.fade,
+                              child: const Menu(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    MyButton(text: "re-challenge", ontap: _rechang),
-                    const Padding(padding: EdgeInsets.only(top: 30)),
-                    MyButton(text: "Quit", ontap: _quit),
-                  ],
-                ),
-              ),
-              const Spacer()
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  _rechang() {
-    c.score = 0.obs;
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.bottomToTop,
-        child: const MyHomePage(),
-      ),
-    );
-  }
-
-  _quit() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.bottomToTop,
-        child: const Menu(),
       ),
     );
   }
