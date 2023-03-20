@@ -1,18 +1,25 @@
 # FunnyQuizz
 ## Screenshot
 ### Start Screen
-![Start-Page](https://user-images.githubusercontent.com/109235060/226447560-2d20c838-e3d8-4bc1-ad6f-75bfef1b7867.jpg)
+![Start-Page](https://user-images.githubusercontent.com/109235060/226449392-acb436e9-b598-4bd7-a2fe-ce3e843df808.jpg)
+
 ### Main Screen
-![main-page](https://user-images.githubusercontent.com/109235060/226447699-90207534-fb61-4875-9317-7494cf7e4e6a.jpg)
+![main-page](https://user-images.githubusercontent.com/109235060/226449468-cf858cd9-a66a-4c66-a2b6-49f8e7f26947.jpg)
+
 ### Correct answer
-![correct-answer](https://user-images.githubusercontent.com/109235060/226447874-374a5d8d-b387-4c74-8a0d-feaf2f6ca462.jpg)
+![correct-answer](https://user-images.githubusercontent.com/109235060/226449505-ff310971-86a6-4a3c-8de7-2e75289f394d.jpg)
+
 ### Incorrect answer
-![incorrect-answer](https://user-images.githubusercontent.com/109235060/226447972-495fd341-d0ab-4a14-90a6-0e8bc28bac45.jpg)
+![incorrect-answer](https://user-images.githubusercontent.com/109235060/226449551-998893e5-2e0e-4aeb-ae11-3b9c4305a5c8.jpg)
+
 ### Game over
-![Game-over](https://user-images.githubusercontent.com/109235060/226448213-11c0008c-a550-4833-956b-4974d7eb308c.jpg)
+![Game-over](https://user-images.githubusercontent.com/109235060/226449622-e937ba0d-baf0-4bda-8c3c-02bffc03b91e.jpg)
+
 ### New Highscore
-![new-high-score](https://user-images.githubusercontent.com/109235060/226448306-3454dd6a-0808-4e69-802e-2e8de44130dc.jpg)
+![new-high-score](https://user-images.githubusercontent.com/109235060/226449666-d00db048-ef8e-483d-b0e6-d33553322446.jpg)
+
 ### Empty Highscore Board
-![empty-highscore-board](https://user-images.githubusercontent.com/109235060/226448380-a8040869-e54d-4488-bc2e-ec1ab51c8f22.jpg)
+![empty-highscore-board](https://user-images.githubusercontent.com/109235060/226449707-66941e90-fef8-4f4b-8773-d9361f7ed8fe.jpg)
+
 ### Highscore Board
-![highscore-board](https://user-images.githubusercontent.com/109235060/226448449-7872f36d-bbba-4df9-bb48-091f2c51fdd4.jpg)
+![highscore-board](https://user-images.githubusercontent.com/109235060/226449743-9e745533-0f8d-4624-87be-e17b31fb30e1.jpg)
