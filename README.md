@@ -1,5 +1,8 @@
-# FunnyQuizz
+## Introduction
+
+* This is a Quizz app project with Flutter + sqflite .
 ## Screenshot
+
 ### Start Screen
 ![Start-Page](https://user-images.githubusercontent.com/109235060/226449392-acb436e9-b598-4bd7-a2fe-ce3e843df808.jpg)
 
