@@ -46,99 +46,102 @@ class _AddHighScoreState extends State<AddHighScore> {
     return Scaffold(
       backgroundColor: myColor().background,
       body: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.black, width: 2)),
-          child: Column(
-            children: [
-              Flexible(
-                flex: 2,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20, bottom: 20),
-                        child: Text("Điểm cao mới", style: MyFont().header),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: 230,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Lottie.asset(
-                              "assets/lottie/firework.json",
-                            ),
-                            Image.asset(
-                              "assets/images/trophy.png",
-                              width: 70,
-                              height: 70,
-                            ),
-                          ],
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.black, width: 2)),
+            child: Column(
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20, bottom: 20),
+                          child: Text("Điểm cao mới", style: MyFont().header),
                         ),
-                      )
-                    ],
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: 230,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Lottie.asset(
+                                "assets/lottie/firework.json",
+                              ),
+                              Image.asset(
+                                "assets/images/trophy.png",
+                                width: 70,
+                                height: 70,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Flexible(
-                flex: 1,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Column(
-                    children: [
-                      Text(
-                        "Enter your name",
-                        style: MyFont().body,
-                      ),
-                      Container(
-                        width: 300,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.black, width: 2),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: TextFormField(
-                            style: MyFont().body,
-                            autofocus: false,
-                            cursorColor: Colors.black,
-                            controller: controller,
-                            decoration: const InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 0)),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.white, width: 0)),
+                Flexible(
+                  flex: 1,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Column(
+                      children: [
+                        Text(
+                          "Enter your name",
+                          style: MyFont().body,
+                        ),
+                        Container(
+                          width: 300,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.black, width: 2),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: TextFormField(
+                              style: MyFont().body,
+                              autofocus: false,
+                              cursorColor: Colors.black,
+                              controller: controller,
+                              decoration: const InputDecoration(
+                                focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.white, width: 0)),
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.white, width: 0)),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: MyButton(
-                          icon: FontAwesomeIcons.check,
-                          color: myColor().green,
-                          width: 150,
-                          height: 50,
-                          fontSize: 15,
-                          padding: 20,
-                          ontap: () {
-                            checkNull();
-                          },
-                        ),
-                      )
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: MyButton(
+                            icon: FontAwesomeIcons.check,
+                            color: myColor().green,
+                            width: 150,
+                            height: 50,
+                            fontSize: 15,
+                            padding: 20,
+                            ontap: () {
+                              checkNull();
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ) //  const Spacer(),
-            ],
+                ) //  const Spacer(),
+              ],
+            ),
           ),
         ),
       ),
